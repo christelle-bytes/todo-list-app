@@ -1,67 +1,60 @@
-<script setup>
-// import router from '@/router';
-import { addUser, users } from '@/services/authService';
+<script setup >
+import { addUser } from '@/services/authService';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-const router=useRouter()
-
 
 const nom=ref('')
 const email=ref('')
 const password=ref('')
 const confirm=ref('')
-let msg =ref('')
+const message =ref('')
+const router=useRouter()
 
-function insrire(){
-    if(nom.value=== '' || email.value=== ''){ return msg.value= "veillez remplire tous les champs"}
-const user= users.find(use=>use.name=== nom.value || use.email=== email.value)
-if(user) return msg.value="nom ou email déjà utiliser"
+function inscrire(){
+  if(nom.value.trim()===''|| email.value.trim()==='' || password.value==='' || confirm.value==='' ){
+    return message.value= 'Tous les champs sont obligatoires'
+  }
+  if(password.value!== confirm.value){
+    return message.value = 'les mots de passes sont differents'
+  }
+  const newUser={
+    nom:nom.value,
+    email:email.value,
+    password:password.value,
+  }
 
-if(password.value !== confirm.value) return  msg.value= "les mots de pass ne correspondes pas "
-
-const newUser={
-    name:nom.value,
-    email: email.value,
-    password: password.value
-}
-
-addUser(newUser)
-setTimeout(()=>{
+  addUser(newUser)
+  setTimeout(() => {
+    
     router.push('/')
-
-},2000)
-
-nom.value=''
-email.value=''
-password.value=''
-confirm.value=''
-msg.value="Inscription reussie"
-
+  }, 2000);
+  
+message.value= 'Inscription reussir avec succes'
+  nom.value=''
+  email.value=''
+  password.value=''
 }
 
 
 </script>
 
-
 <template>
-
-<h1>je suis la page inscription</h1>
-
-<form v-on:submit.prevent="insrire()">
-    <input  v-model="nom" type="text" placeholder="nom?">
-    <input type="email" placeholder="email?" v-model="email">
-    <input type="password" placeholder="pass word" v-model="password">
-    <input type="password" placeholder="pass Confirm" v-model="confirm">
-    <button type="submit"> S'inscrire </button>
-
-    <p>{{ msg }}</p>
-    <!-- <RouterLink to="/">Se connecter</RouterLink> -->
-</form>
-
+  <div class="min-h-screen bg-blue-50 flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-lg p-8 w-full max-w-sm">
+      <h1 class="text-2xl font-bold text-blue-600 mb-6 text-center">Inscription</h1>
+      <form @submit.prevent="inscrire()" class="flex flex-col gap-4">
+        <input type="text" placeholder="Nom" v-model="nom"
+          class="border border-blue-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+        <input type="email" placeholder="Email" v-model="email"
+          class="border border-blue-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+        <input type="password" placeholder="Mot de passe" v-model="password"
+          class="border border-blue-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+        <input type="password" placeholder="Confirmer mot de passe" v-model="confirm"
+          class="border border-blue-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+        <p v-if="message" class="text-red-500 text-sm">{{ message }}</p>
+        <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-lg transition">S'inscrire</button>
+        <RouterLink to="/" class="text-center text-blue-500 hover:underline text-sm">Déjà un compte ? Se connecter</RouterLink>
+      </form>
+    </div>
+  </div>
 </template>
-
-
-<style scoped>
-
-
-</style>

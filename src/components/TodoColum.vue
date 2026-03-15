@@ -1,41 +1,23 @@
 <script setup>
+import TodoCard from './TodoCard.vue';
 
-import TodoCard from "./TodoCard.vue"
+const props= defineProps(['title', 'status','todos'])
+const emit=defineEmits(['drop', 'drag'])
 
-const props = defineProps(["title","status","todos"])
-
-const emit = defineEmits(["drop","drag"])
-
-function drop(){
- emit("drop", props.status)
+function onDrop(){
+  emit('drop',props.status)
 }
 
 </script>
-
 <template>
-
-<div class="col" @dragover.prevent @drop="drop">
-
-<h2>{{ title }}</h2>
-
-<TodoCard
-v-for="t in todos.filter(t=>t.status===status)"
-:key="t.id"
-:todo="t"
-@drag="$emit('drag',$event)"
-/>
-
-</div>
-
+  <div @dragover.prevent @drop="onDrop"
+    class="flex-1 bg-white rounded-2xl shadow p-4 min-h-64">
+    <h2 class="text-lg font-bold text-blue-500 mb-4 tracking-wide">{{ props.title }}</h2>
+    <TodoCard
+      v-for="t in props.todos.filter(t => t.status === props.status)"
+      :key="t.id"
+      :todo="t"
+      @drag="emit('drag', $event)"
+    />
+  </div>
 </template>
-
-<style scoped>
-
-.col{
-width:200px;
-min-height:300px;
-border:1px solid black;
-padding:10px;
-}
-
-</style>

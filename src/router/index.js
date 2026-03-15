@@ -1,66 +1,42 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import LoginView from '@/views/LoginView.vue'
-import IncriptionView from '@/views/IncriptionView.vue'
-import TodoCard from '@/components/TodoCard.vue'
-import TodoColum from '@/components/TodoColum.vue'
-import TodoForm from '@/components/TodoForm.vue'
-import TrashBox from '@/components/TrashBox.vue'
+// router à construire
+//1//
+import HomeView from "@/views/HomeView.vue";
+import IncriptionView from "@/views/IncriptionView.vue";
+import LoginView from "@/views/LoginView.vue";
+import { createRouter ,createWebHistory} from "vue-router";
 
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-     path:"/",
-     name:"login",
-     component:LoginView
-    },
-    {
-     path:"/inscription",
-     name:"inscription",
-     component:IncriptionView
-    },
-    {
-     path:"/home",
-     name:"home",
-     component:HomeView,
-     meta:{ required:true}
-    },
-    {
-     path:"/trash",
-     name:"trash",
-     component:TrashBox,
-    },
-    {
-     path:"/form",
-     name:"form",
-     component:TodoForm,
-    },
-    {
-     path:"/colum",
-     name:"colum",
-     component:TodoColum,
-    
-    },
-    {
-     path:"/card",
-     name:"card",
-     component:TodoCard,
-    },
-  ],
+const router =createRouter({
+    history:createWebHistory(import.meta.env.BASE_URL),
+    routes:[
+        {
+            path:'/',
+            name:'login',
+            component:LoginView
+        },
+        {
+            path:'/inscription',
+            name:'incription',
+            component:IncriptionView
+        },
+        {
+            path:'/home',
+            name:'home',
+            component:HomeView,
+            meta:{ requiresAuth:true }
+        }
+    ]
 })
 
- router.beforeEach((to, from, next)=>{
-  const currentUser= localStorage.getItem("currentUse")
+router.beforeEach((to, from, next) =>{
 
-  if(to.meta.required && !currentUser){
-    return "/"
-  }
+    const currentUsers=localStorage.getItem('currentUser')
 
-    if (to.path === "/" && currentUser) {
-    return { path: "/home" }
-  }
+    if(to.meta.requiresAuth && !currentUsers){
+        next('/')
+    }else{
+        next()
+    }
 
- })
+})
 
 export default router
