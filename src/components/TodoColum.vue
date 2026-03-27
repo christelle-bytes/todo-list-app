@@ -2,11 +2,14 @@
 import TodoCard from './TodoCard.vue';
 
 const props= defineProps(['title', 'status','todos'])
-const emit=defineEmits(['drop', 'drag'])
+const emit=defineEmits(['drop', 'drag', 'update'])
 
 function onDrop(){
   emit('drop',props.status)
 }
+
+
+
 
 </script>
 <template>
@@ -18,6 +21,9 @@ function onDrop(){
       :key="t.id"
       :todo="t"
       @drag="emit('drag', $event)"
+      @update="emit('update',$event)"
+      
     />
+
   </div>
 </template>

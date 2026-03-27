@@ -49,11 +49,32 @@ function drop(status) {
   save()
 }
 
+const deleted= ref([])
 function deleteTodo() {
   if (!dragTodo.value) return
-  todos.value = todos.value.filter(t => t.id !== dragTodo.value.id)
+deleted.value.push(dragTodo.value)
+todos.value = todos.value.filter(t=>t.id !==dragTodo.value.id)
   dragTodo.value = null
   save()
+}
+// function deleteTodo() {
+//   if (!dragTodo.value) return
+// const todos.val
+//   dragTodo.value = null
+//   save()
+// }
+
+function restoreTodos(todo) {
+  todos.value.push(todo)
+  save()
+}
+
+function updateTodo(updateTodo){
+  const index = todos.value.findIndex(t=> t.id=== updateTodo.id)
+  if (index !== -1){
+    todos.value[index]= updateTodo
+    save()
+  }
 }
 
 
@@ -68,11 +89,12 @@ function deleteTodo() {
       </div>
       <TodoForm @add="addTodo" />
       <div class="flex gap-6 mt-8">
-        <TodoColum title="TODO" status="todo" :todos="todos" @drag="startDrag" @drop="drop" />
-        <TodoColum title="IN PROGRESS" status="progress" :todos="todos" @drag="startDrag" @drop="drop" />
-        <TodoColum title="DONE" status="done" :todos="todos" @drag="startDrag" @drop="drop" />
+
+        <TodoColum title="TODO" status="todo" :todos="todos" @drag="startDrag" @drop="drop" @update="updateTodo"  />
+        <TodoColum title="IN PROGRESS" status="progress" :todos="todos" @drag="startDrag" @drop="drop" @update="updateTodo"  />
+        <TodoColum title="DONE" status="done" :todos="todos" @drag="startDrag" @drop="drop" @update="updateTodo" />
       </div>
-      <TrashBox @delete="deleteTodo" />
+      <TrashBox :deleted="deleted"  @delete="deleteTodo"  @restore="restoreTodos"/>
     </div>
   </div>
 </template>
